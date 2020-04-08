@@ -21,7 +21,7 @@ public class B1175 {
                 run_ans = 0;
                 waiting.push(Long.parseLong(gvn[1]));
             }
-            // System.out.printf("%s %d\n", cmd, run_ans);
+            System.out.printf("%s %d\n", cmd, run_ans);
         }
         while(!ans.isEmpty()) {
             run_ans += ans.pop();
