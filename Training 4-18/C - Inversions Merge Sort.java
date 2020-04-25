@@ -1,7 +1,6 @@
 import java.util.*;
 import java.io.*;
-public class C {
-    // C is for Cisco !!!
+public class CMerge {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
@@ -14,9 +13,7 @@ public class C {
             inp = br.readLine().split(" ");
             int[] ary = new int[N];
             for( int i = 0; i < N; i++ ) ary[i] = hm.get(inp[i]);
-            // System.out.println(Arrays.toString(ary));
             pw.println(sort(ary,0,N-1));
-            // System.out.println(Arrays.toString(ary));
         }
         pw.close();
     }
@@ -31,30 +28,23 @@ public class C {
         return inversions;
     }
     static long merge(int[] ary, int l, int m, int r) {
-        Queue<Integer> left = new LinkedList<>();
-        Queue<Integer> right = new LinkedList<>();
-        // System.out.printf("%d %d %d\n",l,m,r);
-        for( int i = l; i <= m; i++ ) left.add(ary[i]);
-        for( int i = m+1; i <= r; i++ ) right.add(ary[i]);
-        int k = l, leftInd = l, inversions = 0;
-        while( !left.isEmpty() && !right.isEmpty() ) {
-            if( left.peek() < right.peek() ) {
-                ary[k] = left.remove();
-                leftInd++;
-            } else {
-                ary[k] = right.remove();
-                inversions += (m+1)-leftInd;
+        int[] L = Arrays.copyOfRange(ary, l, m+1);
+        int[] R = Arrays.copyOfRange(ary, m+1, r+1);
+        int leftInd = 0, rightInd = 0, ind = l;
+        long inversions = 0;
+        while( leftInd < L.length && rightInd < R.length ) {
+            if( L[leftInd] <= R[rightInd] ) ary[ind++] = L[leftInd++];
+            else {
+                ary[ind++] = R[rightInd++];
+                inversions += (m+1)-(l+leftInd);
+                // both array fellows should be sorted at this point
+                // if some fellow L[i] from the left side is greater than some fellow R[j] at the right side,
+                //      an inversion happened
+                // add the number of fellows from L[i+1] (i+1 => l+leftInd) to the midpoint (m+1)
             }
-            k++;
         }
-        while(!left.isEmpty()) {
-            ary[k] = left.remove();
-            k++;
-        }
-        while(!right.isEmpty()) {
-            ary[k] = right.remove();
-            k++;
-        }
+        while( leftInd < L.length ) ary[ind++] = L[leftInd++];
+        while( rightInd < R.length ) ary[ind++] = R[rightInd++];
         return inversions;
     }
 }
